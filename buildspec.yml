@@ -1,0 +1,33 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 16
+  pre_build:
+    commands:
+      - echo "Logging into Amazon ECR..."
+      - aws ecr get-login-password --region ap-northeast-1 | docker login --username AWS --password-stdin 575108932906.dkr.ecr.ap-northeast-1.amazonaws.com
+
+  build:
+    commands:
+      - echo "Build started on `date`"
+      - npm install
+      - echo "npm install completed on `date`"
+      - npm run build
+      - echo "npm run build completed on `date`"
+      - TAG=`date +%Y%m%d%H%M%S`
+      - docker build -t 575108932906.dkr.ecr.ap-northeast-1.amazonaws.com/project1030:$TAG .
+      - echo "Docker build completed on `date`"
+      - docker push 575108932906.dkr.ecr.ap-northeast-1.amazonaws.com/project1030:$TAG
+      - echo "Docker push completed on `date`"
+
+  post_build:
+    commands:
+      - echo "Build completed on `date`"
+      - printf '[{"name":"mynginx","imageUri":"%s"}]' 575108932906.dkr.ecr.ap-northeast-1.amazonaws.com/project1030:$TAG > imageDefinitions.json
+      - cat imageDefinitions.json
+
+artifacts:
+  files:
+    - imageDefinitions.json
