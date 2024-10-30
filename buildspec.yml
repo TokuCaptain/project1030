@@ -26,8 +26,8 @@ phases:
     commands:
       - echo "Build completed on `date`"
       - echo "Creating imageDefinitions.json file for ECS deployment"
-      - printf '[{"name":"nginx","imageUri":"%s"}]' 575108932906.dkr.ecr.ap-northeast-1.amazonaws.com/project1030:$TAG > imageDefinitions.json
-      - cat imageDefinitions.json
+      - printf '[{"name":"my-container","imageUri":"%s"}]' 575108932906.dkr.ecr.ap-northeast-1.amazonaws.com/project1030:$TAG > imagedefinitions.json
+      - cat imagedefinitions.json
 
 artifacts:
   files:
